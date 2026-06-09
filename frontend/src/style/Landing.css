@@ -1,0 +1,352 @@
+/* Navbar */
+
+/* ===========================
+   NAVBAR SCROLL EFFECT
+=========================== */
+
+.custom-nav {
+  background: rgba(244, 232, 232, 0.604);
+  transition: all .4s ease;
+}
+
+.navbar-scrolled {
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  transition: all .4s ease;
+}
+
+/* Logo */
+
+.navbar-scrolled .navbar-brand {
+  color: #f97316 !important;
+}
+
+/* Nav Links */
+
+.navbar-scrolled .nav-link {
+  color: #f97316 !important;
+}
+
+/* Sign In Button */
+
+.navbar-scrolled .btn-outline-light {
+  color: #f97316 !important;
+  border-color: #f97316 !important;
+}
+
+.navbar-scrolled .btn-outline-light:hover {
+  background: #f97316;
+  color: white !important;
+}
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+.nav-link {
+  color: white !important;
+  margin: 0 10px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  width: 0;
+  height: 2px;
+  background: #ff5a1f;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: 0.4s;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+
+.signup-btn {
+  background: #ff5a1f;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 8px 22px;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: all 0.4s ease;
+}
+
+.signup-btn:hover {
+  background: #ff7b47;
+  color:white;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(255, 90, 31, 0.4);
+}
+/* =========================
+   RESPONSIVE NAVBAR
+========================= */
+
+@media (max-width: 991px) {
+
+  .navbar-collapse {
+    background: rgba(0, 0, 0, 0.95);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 15px;
+  }
+
+  .navbar-nav {
+    margin-top: 15px;
+  }
+
+  .nav-item {
+    margin: 8px 0;
+  }
+
+  .nav-link {
+    font-size: 15px;
+  }
+
+  .signup-btn,
+  .btn-outline-light {
+    width: 100%;
+  }
+
+  .navbar-brand {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .navbar {
+    padding: 10px 0;
+  }
+
+  .navbar-brand {
+    font-size: 17px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
+}
+/* Hero */
+
+.hero {
+  height: 100vh;
+
+  background: url("/assets/hero.png");
+  background-size: cover;
+  background-position: center;
+
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.4)
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  text-align: center;
+  color: white;
+
+  max-width: 850px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.hero-content p {
+  font-size: 16px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+/* Buttons */
+
+.hero-buttons {
+  margin-top: 30px;
+}
+
+.main-btn {
+  background: #ff5a1f;
+  color: white;
+  padding: 14px 35px;
+  border-radius: 40px;
+  margin-right: 10px;
+}
+
+.learn-btn {
+  border: 2px solid white;
+  color: white;
+  padding: 14px 35px;
+  border-radius: 40px;
+}
+.main-btn,
+.learn-btn {
+  padding: 10px 25px;
+  font-size: 14px;
+  border-radius: 30px;
+  transition: all 0.4s ease;
+}
+.main-btn:hover,
+.learn-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Video section */
+.video-section{
+    margin-top:-150px;
+    position:relative;
+    z-index:10;
+}
+
+.video-card{
+    width:50%;
+    margin:auto;
+    position:relative;
+    border-radius:25px;
+    overflow:hidden;
+
+    box-shadow:
+    0 25px 60px rgba(0,0,0,.25);
+
+    transition:.4s ease;
+}
+
+.video-card:hover{
+    transform:translateY(-8px);
+}
+
+.video-card video{
+    width:100%;
+    display:block;
+}
+
+
+.play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 80px;
+  height: 80px;
+
+  border: none;
+  border-radius: 50%;
+
+  font-size: 30px;
+  cursor: pointer;
+
+  background: white;
+  transition: all .3s ease;
+}
+
+.play-btn:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+/* Animations */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-70px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.3rem;
+  }
+
+  .video-card {
+    width: 95%;
+  }
+}
+.whyus-section {
+  transition: all 0.3s ease;
+}
+.whyus-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+
+}
+.simple-process-section {
+  transition: all 0.3s ease;
+}
+.simple-process-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+}
+.testimonial-section {
+  background: #f8f9fa;
+}
+
+.testimonial-card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 16px;
+  height: 100%;
+
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-8px);
+
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-img {
+  width: 80px;
+  height: 80px;
+
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonial-card p {
+  font-size: 14px;
+  line-height: 1.7;
+}
