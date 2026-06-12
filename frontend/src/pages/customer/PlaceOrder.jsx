@@ -95,7 +95,7 @@ function PlaceOrder() {
     setEstimating(false)
   }
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault()
 
     if (!pickupLocation || !dropoffLocation) {
@@ -103,23 +103,26 @@ function PlaceOrder() {
       return
     }
 
-    const orderData = {
-      ...formData,
-      pickup_lat: pickupLocation.lat,
-      pickup_lng: pickupLocation.lng,
-      dropoff_lat: dropoffLocation.lat,
-      dropoff_lng: dropoffLocation.lng,
-    }
+ const orderData = {
+  ...formData,
+  pickup_lat: parseFloat(pickupLocation.lat),
+  pickup_lng: parseFloat(pickupLocation.lng),
+  dropoff_lat: parseFloat(dropoffLocation.lat),
+  dropoff_lng: parseFloat(dropoffLocation.lng),
+}
+
+    console.log('Order data being sent:', orderData)
 
     const result = await dispatch(createOrder(orderData))
     if (createOrder.fulfilled.match(result)) {
       toast.success('Order placed successfully!')
       navigate('/customer/orders')
     } else {
+      console.log('Error:', result.payload)
       toast.error('Failed to place order. Please try again.')
     }
-  }
-
+  } 
+  
   return (
     <div className="min-vh-100 bg-light">
       <nav className="navbar px-4 py-3" style={{ backgroundColor: '#F97316' }}>

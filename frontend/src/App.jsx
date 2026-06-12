@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { useSelector } from 'react-redux'
+import TrackOrder from './pages/customer/TrackOrder'
+import ActiveDelivery from './pages/rider/ActiveDelivery'
 import Landing from './pages/Landing'
 import About from './pages/About'
 import Contact from './pages/Contact'
@@ -62,6 +64,11 @@ function App() {
           <CustomerOrders />
         </ProtectedRoute>
       } />
+      <Route path="/customer/track/:orderId" element={
+  <ProtectedRoute allowedRoles={['customer']}>
+    <TrackOrder />
+  </ProtectedRoute>
+} />
 
       <Route path="/rider/dashboard" element={
         <ProtectedRoute allowedRoles={['rider']}>
@@ -79,6 +86,11 @@ function App() {
     <RiderMyOrders />
   </ProtectedRoute>
 } />
+<Route path="/rider/active-delivery/:orderId" element={
+  <ProtectedRoute allowedRoles={['rider']}>
+    <ActiveDelivery />
+  </ProtectedRoute>
+} />
 
       <Route path="/admin/dashboard" element={
         <ProtectedRoute allowedRoles={['admin']}>
@@ -88,6 +100,7 @@ function App() {
 
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
+    
   )
 }
 

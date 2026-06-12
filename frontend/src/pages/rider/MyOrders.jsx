@@ -12,6 +12,9 @@ function RiderMyOrders() {
     dispatch(fetchMyOrders())
   }, [dispatch])
 
+  const activeOrders = orders.filter(o => !['delivered', 'cancelled'].includes(o.status))
+  const completedOrders = orders.filter(o => o.status === 'delivered')
+
   return (
     <div className="min-vh-100 bg-light">
       <nav className="navbar px-4 py-3" style={{ backgroundColor: '#1C1C1E' }}>
@@ -21,17 +24,40 @@ function RiderMyOrders() {
         </button>
       </nav>
 
-      <div className="container py-5">
-        <h4 className="fw-bold mb-4">My Deliveries</h4>
+      <div className="container py-4">
+        <div className="row g-3 mb-4">
+          <div className="col-6">
+            <div className="card border-0 shadow-sm p-3 text-center" style={{ borderRadius: '12px' }}>
+              <h4 className="fw-bold mb-0">{activeOrders.length}</h4>
+              <small className="text-muted">Active</small>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="card border-0 shadow-sm p-3 text-center" style={{ borderRadius: '12px' }}>
+              <h4 className="fw-bold mb-0">{completedOrders.length}</h4>
+              <small className="text-muted">Completed</small>
+            </div>
+          </div>
+        </div>
 
-        {loading && <div className="text-center py-5"><div className="spinner-border"></div></div>}
+        <h5 className="fw-bold mb-3">My Deliveries</h5>
+
+        {loading && (
+          <div className="text-center py-5">
+            <div className="spinner-border"></div>
+          </div>
+        )}
 
         {!loading && orders.length === 0 && (
           <div className="text-center py-5">
             <div style={{ fontSize: '4rem' }}>🏍️</div>
             <h5 className="fw-bold mt-3">No deliveries yet</h5>
             <p className="text-muted">Accept an order to get started!</p>
-            <button className="btn text-white fw-semibold px-4" style={{ backgroundColor: '#1C1C1E' }} onClick={() => navigate('/rider/available-orders')}>
+            <button
+              className="btn text-white fw-semibold px-4"
+              style={{ backgroundColor: '#1C1C1E' }}
+              onClick={() => navigate('/rider/available-orders')}
+            >
               View Available Orders
             </button>
           </div>
@@ -43,16 +69,27 @@ function RiderMyOrders() {
               <div className="card border-0 shadow-sm p-4" style={{ borderRadius: '12px' }}>
                 <div className="d-flex justify-content-between align-items-start flex-wrap gap-2">
                   <div>
-                    <p className="mb-1"><span className="fw-semibold">📍 Pickup:</span> {order.pickup_address}</p>
-                    <p className="mb-1"><span className="fw-semibold">🏁 Dropoff:</span> {order.dropoff_address}</p>
-                    <p className="mb-1"><span className="fw-semibold">👤 Receiver:</span> {order.receiver_name} — {order.receiver_phone}</p>
-                    <p className="mb-0 text-muted small">{new Date(order.created_at).toLocaleString()}</p>
+                    <p className="mb-1 small"><span className="fw-semibold">📍 Pickup:</span> {order.pickup_address}</p>
+                    <p className="mb-1 small"><span className="fw-semibold">🏁 Dropoff:</span> {order.dropoff_address}</p>
+                    <p className="mb-1 small"><span className="fw-semibold">👤 Receiver:</span> {order.receiver_name} — {order.receiver_phone}</p>
+                    <p className="mb-0 text-muted" style={{ fontSize: '12px' }}>{new Date(order.created_at).toLocaleString()}</p>
                   </div>
                   <div className="text-end">
                     <span className={`badge d-block mb-2 ${order.status === 'delivered' ? 'bg-success' : order.status === 'cancelled' ? 'bg-danger' : 'bg-warning'}`}>
                       {order.status.replace('_', ' ').toUpperCase()}
                     </span>
-                    <p className="fw-bold mb-0" style={{ color: '#F97316' }}>₦{Number(order.price).toLocaleString()}</p>
+                    <p className="fw-bold mb-2" style={{ color: '#F97316' }}>
+                      ₦{Number(order.price).toLocaleString()}
+                    </p>
+                    {!['delivered', 'cancelled'].includes(order.status) && (
+                      <button
+                        className="btn btn-sm text-white fw-semibold"
+                        style={{ backgroundColor: '#1C1C1E', borderRadius: '8px' }}
+                        onClick={() => navigate(`/rider/active-delivery/${order.id}`)}
+                      >
+                        🏍️ Go to Delivery
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

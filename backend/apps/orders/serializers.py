@@ -5,37 +5,26 @@ import math
 
 
 def calculate_distance(lat1, lng1, lat2, lng2):
-    # Haversine formula — calculates distance between two coordinates in KM
-    R = 6371  # Earth radius in kilometers
-
+    R = 6371
     lat1, lng1, lat2, lng2 = map(math.radians, [float(lat1), float(lng1), float(lat2), float(lng2)])
-
     dlat = lat2 - lat1
     dlng = lng2 - lng1
-
     a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlng/2)**2
     c = 2 * math.asin(math.sqrt(a))
-
     return round(R * c, 2)
 
 
 def calculate_price(distance_km, package_size):
-    # Base fare
     base_fare = 1500
-
-    # Price per KM based on package size
     if package_size == 'small':
         price_per_km = 300
     elif package_size == 'medium':
         price_per_km = 400
-    else:  # large
+    else:
         price_per_km = 600
-
-    # Calculate total
     price = base_fare + (price_per_km * distance_km)
-
-    # Minimum price is 3000
     return max(round(price), 3000)
+
 
 class OrderSerializer(serializers.ModelSerializer):
     customer_detail = UserSerializer(source='customer', read_only=True)
@@ -48,6 +37,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
+    pickup_lat = serializers.FloatField()
+    pickup_lng = serializers.FloatField()
+    dropoff_lat = serializers.FloatField()
+    dropoff_lng = serializers.FloatField()
+
     class Meta:
         model = Order
         fields = [
@@ -68,7 +62,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         customer = self.context['request'].user
 
-        # Calculate distance
         distance_km = calculate_distance(
             validated_data['pickup_lat'],
             validated_data['pickup_lng'],
@@ -76,7 +69,6 @@ class CreateOrderSerializer(serializers.ModelSerializer):
             validated_data['dropoff_lng'],
         )
 
-        # Calculate price
         price = calculate_price(distance_km, validated_data.get('package_size', 'small'))
 
         order = Order.objects.create(
@@ -92,5 +84,3 @@ class UpdateOrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['status']
-
-

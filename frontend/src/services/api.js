@@ -48,4 +48,12 @@ export const orderAPI = {
     estimatePrice: (data) => api.post('/orders/estimate-price/', data),
 
 }
+export const trackingAPI = {
+    getOrderForTracking: (id) => api.get(`/orders/${id}/`),
+}
+
+export const createWebSocket = (orderId) => {
+    const token = localStorage.getItem('access_token')
+    return new WebSocket(`ws://localhost:8000/ws/tracking/${orderId}/`)
+}
 export default api
