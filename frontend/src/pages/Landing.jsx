@@ -7,6 +7,7 @@ import deliveryVideo from "../assets/delivery.mp4";
 import customer1 from "../assets/testimonials/customer1.png";
 import customer2 from "../assets/testimonials/customer2.png";
 import customer3 from "../assets/testimonials/customer3.png";
+
 import { useRef, useState } from "react";
 
 function Landing() {
@@ -63,7 +64,7 @@ const toggleVideo = () => {
   </Link>
 
        <Link
-    to="/"
+    to="About"
    className="btn learn-btn"
   >
     Learn More
@@ -207,7 +208,7 @@ const toggleVideo = () => {
         </p>
 <Link to="/About">
         <button
-          className="btn px-4 py-2 fw-semibold"
+          className="btn px-4 py-2 fw-semibold read-more-btn"
           style={{
             backgroundColor: "#F97316",
             color: "#fff",

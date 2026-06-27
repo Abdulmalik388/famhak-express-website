@@ -82,14 +82,35 @@ function CustomerOrders() {
                                         <p className="mb-1 small"><span className="fw-semibold">📦 Package:</span> {order.package_description}</p>
                                         <p className="mb-0 text-muted" style={{ fontSize: '12px' }}>{new Date(order.created_at).toLocaleString()}</p>
                                     </div>
+
                                     <div className="text-end">
                                         <span className={`badge bg-${statusColors[order.status]} d-block mb-2`}>
                                             {order.status.replace('_', ' ').toUpperCase()}
                                         </span>
+
+                                        {order.is_paid ? (
+                                            <span className="badge bg-success d-block mb-2">✅ PAID</span>
+                                        ) : (
+                                            order.status !== 'cancelled' && (
+                                                <span className="badge bg-danger d-block mb-2">❌ UNPAID</span>
+                                            )
+                                        )}
+
                                         <p className="fw-bold mb-2" style={{ color: '#F97316' }}>
                                             ₦{Number(order.price).toLocaleString()}
                                         </p>
-                                        <div className="d-flex gap-2 justify-content-end">
+
+                                        <div className="d-flex gap-2 justify-content-end flex-wrap">
+                                            {!order.is_paid && order.status !== 'cancelled' && (
+                                                <button
+                                                    className="btn btn-sm text-white fw-semibold"
+                                                    style={{ backgroundColor: '#198754', borderRadius: '8px' }}
+                                                    onClick={() => navigate(`/customer/payment/${order.id}`)}
+                                                >
+                                                    💳 Pay
+                                                </button>
+                                            )}
+
                                             {['assigned', 'picked_up', 'in_transit'].includes(order.status) && (
                                                 <button
                                                     className="btn btn-sm text-white fw-semibold"
@@ -99,6 +120,7 @@ function CustomerOrders() {
                                                     📍 Track
                                                 </button>
                                             )}
+
                                             {order.status === 'pending' && (
                                                 <button
                                                     className="btn btn-sm btn-outline-danger fw-semibold"

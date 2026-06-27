@@ -7,7 +7,8 @@ import Landing from './pages/Landing'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Blog from './pages/Blog'
-import Riderform from './pages/Riderform'
+import BlogDetail from './pages/BlogDetail'
+
 import Login from './pages/Login'
 import Register from './pages/Register'
 import CustomerDashboard from './pages/customer/Dashboard'
@@ -17,7 +18,9 @@ import PlaceOrder from './pages/customer/PlaceOrder'
 import CustomerOrders from './pages/customer/Orders'
 import AvailableOrders from './pages/rider/AvailableOrders'
 import RiderMyOrders from './pages/rider/MyOrders'
-
+import Payment from './pages/customer/Payment'
+import PaymentHistory from './pages/customer/PaymentHistory'
+import RiderEarnings from './pages/rider/Earnings'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -29,7 +32,8 @@ function App() {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/blog" element={<Blog />} />
-     <Route path="/riderform" element={<Riderform />} />
+      <Route path="/blog/:slug" element={<BlogDetail />} />
+  
 
       <Route path="/login" element={
         isAuthenticated
@@ -97,7 +101,23 @@ function App() {
           <AdminDashboard />
         </ProtectedRoute>
       } />
+<Route path="/customer/payment/:orderId" element={
+    <ProtectedRoute allowedRoles={['customer']}>
+        <Payment />
+    </ProtectedRoute>
+} />
 
+<Route path="/customer/payment-history" element={
+    <ProtectedRoute allowedRoles={['customer']}>
+        <PaymentHistory />
+    </ProtectedRoute>
+} />
+
+<Route path="/rider/earnings" element={
+    <ProtectedRoute allowedRoles={['rider']}>
+        <RiderEarnings />
+    </ProtectedRoute>
+} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
     

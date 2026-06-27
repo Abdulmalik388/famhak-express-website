@@ -1,9 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import logo from "../../assets/logo.png";
 
 const Navbar = () => {
 
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const isAbout = location.pathname.startsWith("/about");
+  const isBlog = location.pathname.startsWith("/blog");
+  const isContact = location.pathname.startsWith("/contact");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,16 +23,25 @@ const Navbar = () => {
   }, []);
   return (
     <nav
-  className={`navbar navbar-expand-lg fixed-top ${
-    scrolled ? "navbar-scrolled" : "custom-nav"
-  }`}
->
+      className={`navbar navbar-expand-lg fixed-top ${
+        scrolled ? "navbar-scrolled" : "custom-nav"
+      }`}
+    >
       <div className="container">
 
         {/* Logo */}
-        <Link className="navbar-brand  fw-bold" to="/">
-          FAMHAK
-        </Link>
+  <Link className="navbar-brand famhak-logo" to="/">
+  <div className="logo-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div className="logo-content">
+    <h3>FAMHAK</h3>
+    <p>we deliver in peace</p>
+  </div>
+</Link>
 
         {/* Mobile Toggle Button */}
         <button
@@ -49,19 +63,19 @@ const Navbar = () => {
         >
           <ul className="navbar-nav mx-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="About">
+              <Link className={`nav-link ${isAbout ? "nav-link-about" : ""}`} to="/about">
                 ABOUT
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link" to="Contact">
+              <Link className={`nav-link ${isContact ? "nav-link-contact" : ""}`} to="/contact">
                 CONTACT
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link" to="Blog">
+              <Link className={`nav-link ${isBlog ? "nav-link-blog" : ""}`} to="/blog">
                 BLOG
               </Link>
             </li>

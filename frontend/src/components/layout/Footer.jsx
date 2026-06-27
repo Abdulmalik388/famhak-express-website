@@ -1,5 +1,6 @@
  import { Link } from "react-router-dom";
 
+
  {/* FOOTER */}
  function Footer() {
   return (
@@ -15,25 +16,25 @@
             <div className="col-md-2">
               <h6 className="fw-bold text-white mb-3">Company</h6>
               <ul className="list-unstyled text-secondary">
-                <li className="mb-2"><a href="/About" className="text-secondary text-decoration-none">About Us</a></li>
-                <li className="mb-2"><a href="/Contact" className="text-secondary text-decoration-none">Contact</a></li>
-                <li className="mb-2"><a href="/Blog" className="text-secondary text-decoration-none">Blog</a></li>
+                <li className="footer mb-2"><a href="/About" className=" text-decoration-none footer-text">About Us</a></li>
+                <li className="mb-2"><a href="/Contact" className=" text-decoration-none footer-text">Contact</a></li>
+                <li className="mb-2"><a href="/Blog" className=" text-decoration-none footer-text">Blog</a></li>
               </ul>
             </div>
             <div className="col-md-2">
               <h6 className="fw-bold text-white mb-3">Services</h6>
               <ul className="list-unstyled text-secondary">
-                <li className="mb-2"><a href="/Register" className="text-secondary text-decoration-none">Send Package</a></li>
-                <li className="mb-2"><a href="/Riderform" className="text-secondary text-decoration-none">Become a Rider</a></li>
-                <li className="mb-2"><a href="/Register" className="text-secondary text-decoration-none">Business</a></li>
+                <li className="mb-2"><a href="/Login" className=" text-decoration-none footer-text">Send Package</a></li>
+                <li className="mb-2"><a href="/Riderform" className=" text-decoration-none footer-text">Get started</a></li>
+                <li className="mb-2"><a href="/Register" className=" text-decoration-none footer-text">Business</a></li>
               </ul>
             </div>
             <div className="col-md-4">
               <h6 className="fw-bold text-white mb-3">Contact Us</h6>
               <ul className="list-unstyled text-secondary">
-                <li className="mb-2">famhaklawal2020@gmail.com</li>
-                <li className="mb-2">+234 8177318070 </li>
-                <li className="mb-2">Lagos, Nigeria</li>
+                <li className="mb-2 footer-text">famhaklawal2020@gmail.com</li>
+                <li className="mb-2 footer-text">+234 8177318070 </li>
+                <li className="mb-2 footer-text">Lagos, Nigeria</li>
               </ul>
             </div>
           </div>
@@ -41,8 +42,8 @@
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
             <p className="text-secondary mb-0 small">© 2020 Famhak Express Delivery Services. All rights reserved.</p>
             <div className="d-flex gap-3">
-              <a href="#" className="text-secondary text-decoration-none small">Privacy Policy</a>
-              <a href="#" className="text-secondary text-decoration-none small">Terms of Service</a>
+              <a href="#" className=" footer-text text-decoration-none small">Privacy Policy</a>
+              <a href="#" className=" footer-text text-decoration-none small">Terms of Service</a>
             </div>
           </div>
         </div>

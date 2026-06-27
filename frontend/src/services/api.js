@@ -56,4 +56,13 @@ export const createWebSocket = (orderId) => {
     const token = localStorage.getItem('access_token')
     return new WebSocket(`ws://localhost:8000/ws/tracking/${orderId}/`)
 }
+export const paymentAPI = {
+    initialize: (data) => api.post('/payments/initialize/', data),
+    verify: (data) => api.post('/payments/verify/', data),
+    getHistory: () => api.get('/payments/history/'),
+    getRiderEarnings: () => api.get('/payments/rider-earnings/'),
+}
+export const contactAPI = {
+  submit: (data) => api.post('/notifications/contact/', data),
+}
 export default api

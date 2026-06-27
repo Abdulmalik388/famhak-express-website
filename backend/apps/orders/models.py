@@ -55,6 +55,14 @@ class Order(models.Model):
 
     # Status
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payment_status = models.CharField(
+        max_length=20,
+        choices=(
+            ('paid', 'Paid'),
+            ('unpaid', 'Unpaid'),
+        ),
+        default='unpaid'
+    )
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)

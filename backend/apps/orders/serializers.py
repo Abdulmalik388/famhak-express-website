@@ -29,11 +29,18 @@ def calculate_price(distance_km, package_size):
 class OrderSerializer(serializers.ModelSerializer):
     customer_detail = UserSerializer(source='customer', read_only=True)
     rider_detail = UserSerializer(source='rider', read_only=True)
+    is_paid = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = '__all__'
         read_only_fields = ['id', 'customer', 'created_at', 'updated_at']
+
+    def get_is_paid(self, obj):
+        try:
+            return obj.payment.status == 'success'
+        except:
+            return False
 
 
 class CreateOrderSerializer(serializers.ModelSerializer):
@@ -61,16 +68,11 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         customer = self.context['request'].user
-
         distance_km = calculate_distance(
-            validated_data['pickup_lat'],
-            validated_data['pickup_lng'],
-            validated_data['dropoff_lat'],
-            validated_data['dropoff_lng'],
+            validated_data['pickup_lat'], validated_data['pickup_lng'],
+            validated_data['dropoff_lat'], validated_data['dropoff_lng'],
         )
-
         price = calculate_price(distance_km, validated_data.get('package_size', 'small'))
-
         order = Order.objects.create(
             customer=customer,
             price=price,

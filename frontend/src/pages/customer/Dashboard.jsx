@@ -54,14 +54,31 @@ function CustomerDashboard() {
         </div>
 
         <div className="row g-3 mb-4">
-          <div className="col-md-6">
-            <button className="btn w-100 text-white fw-bold py-3 shadow-sm" style={{ backgroundColor: '#F97316', borderRadius: '12px', border: 'none' }} onClick={() => navigate('/customer/place-order')}>
+          <div className="col-md-4">
+            <button
+              className="btn w-100 text-white fw-bold py-3 shadow-sm"
+              style={{ backgroundColor: '#F97316', borderRadius: '12px', border: 'none' }}
+              onClick={() => navigate('/customer/place-order')}
+            >
               📦 Place New Order
             </button>
           </div>
-          <div className="col-md-6">
-            <button className="btn w-100 fw-bold py-3 shadow-sm" style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #dee2e6' }} onClick={() => navigate('/customer/orders')}>
+          <div className="col-md-4">
+            <button
+              className="btn w-100 fw-bold py-3 shadow-sm"
+              style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #dee2e6' }}
+              onClick={() => navigate('/customer/orders')}
+            >
               📋 View All Orders
+            </button>
+          </div>
+          <div className="col-md-4">
+            <button
+              className="btn w-100 fw-bold py-3 shadow-sm"
+              style={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid #dee2e6' }}
+              onClick={() => navigate('/customer/payment-history')}
+            >
+              💳 Payment History
             </button>
           </div>
         </div>
