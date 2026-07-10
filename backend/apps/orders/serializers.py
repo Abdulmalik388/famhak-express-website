@@ -4,6 +4,10 @@ from apps.accounts.serializers import UserSerializer
 import math
 
 
+MINIMUM_CHARGE = 3000
+BASE_FARE = 1200
+
+
 def calculate_distance(lat1, lng1, lat2, lng2):
     R = 6371
     lat1, lng1, lat2, lng2 = map(math.radians, [float(lat1), float(lng1), float(lat2), float(lng2)])
@@ -15,15 +19,14 @@ def calculate_distance(lat1, lng1, lat2, lng2):
 
 
 def calculate_price(distance_km, package_size):
-    base_fare = 1500
     if package_size == 'small':
-        price_per_km = 300
+        price_per_km = 250
     elif package_size == 'medium':
-        price_per_km = 400
+        price_per_km = 330
     else:
-        price_per_km = 600
-    price = base_fare + (price_per_km * distance_km)
-    return max(round(price), 3000)
+        price_per_km = 450
+    price = BASE_FARE + (price_per_km * distance_km)
+    return max(round(price), MINIMUM_CHARGE)
 
 
 class OrderSerializer(serializers.ModelSerializer):

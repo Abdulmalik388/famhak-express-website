@@ -5,7 +5,14 @@ from rest_framework.response import Response
 from django.utils import timezone
 from .models import Order
 from .serializers import OrderSerializer, CreateOrderSerializer
-
+from apps.notifications.utils import (
+    notify_order_placed,
+    notify_order_assigned,
+    notify_order_picked_up,
+    notify_order_in_transit,
+    notify_order_delivered,
+    notify_order_cancelled,
+)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -18,6 +25,7 @@ def create_order(request):
     serializer = CreateOrderSerializer(data=request.data, context={'request': request})
     if serializer.is_valid():
         order = serializer.save()
+        notify_order_placed(order)
         return Response({
             'message': 'Order placed successfully',
             'order': OrderSerializer(order).data
@@ -81,6 +89,7 @@ def update_order_status(request, order_id):
         order.rider = request.user
         order.status = 'assigned'
         order.save()
+        notify_order_assigned(order)
         return Response({
             'message': 'Order accepted',
             'order': OrderSerializer(order).data
@@ -88,8 +97,13 @@ def update_order_status(request, order_id):
 
     if request.user.role == 'rider' and order.rider == request.user:
         order.status = new_status
-        if new_status == 'delivered':
+        if new_status == 'picked_up':
+            notify_order_picked_up(order)
+        elif new_status == 'in_transit':
+            notify_order_in_transit(order)
+        elif new_status == 'delivered':
             order.delivered_at = timezone.now()
+            notify_order_delivered(order)
         order.save()
         return Response({
             'message': 'Status updated',
@@ -104,6 +118,7 @@ def update_order_status(request, order_id):
             )
         order.status = 'cancelled'
         order.save()
+        notify_order_cancelled(order)
         return Response({
             'message': 'Order cancelled',
             'order': OrderSerializer(order).data

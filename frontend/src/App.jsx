@@ -8,6 +8,8 @@ import About from './pages/About'
 import Contact from './pages/Contact'
 import Blog from './pages/Blog'
 import BlogDetail from './pages/BlogDetail'
+import Settings from './pages/customer/Settings'
+import RiderSettings from './pages/rider/Settings'
 
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -20,7 +22,6 @@ import AvailableOrders from './pages/rider/AvailableOrders'
 import RiderMyOrders from './pages/rider/MyOrders'
 import Payment from './pages/customer/Payment'
 import PaymentHistory from './pages/customer/PaymentHistory'
-import RiderEarnings from './pages/rider/Earnings'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -106,18 +107,22 @@ function App() {
         <Payment />
     </ProtectedRoute>
 } />
-
+<Route path="/customer/profile" element={
+    <ProtectedRoute allowedRoles={['customer']}>
+        <Settings />
+    </ProtectedRoute>
+} />
 <Route path="/customer/payment-history" element={
     <ProtectedRoute allowedRoles={['customer']}>
         <PaymentHistory />
     </ProtectedRoute>
 } />
-
-<Route path="/rider/earnings" element={
-    <ProtectedRoute allowedRoles={['rider']}>
-        <RiderEarnings />
-    </ProtectedRoute>
+<Route path="/rider/profile" element={
+  <ProtectedRoute allowedRoles={['rider']}>
+    <RiderSettings />
+  </ProtectedRoute>
 } />
+
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
     

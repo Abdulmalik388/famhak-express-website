@@ -32,13 +32,7 @@ api.interceptors.response.use(
   }
 )
 
-export const authAPI = {
-  register: (data) => api.post('/auth/register/', data),
-  login: (data) => api.post('/auth/login/', data),
-  logout: (data) => api.post('/auth/logout/', data),
-  getProfile: () => api.get('/auth/profile/'),
-  updateProfile: (data) => api.patch('/auth/profile/update/', data),
-}
+
 export const orderAPI = {
     createOrder: (data) => api.post('/orders/create/', data),
     getMyOrders: () => api.get('/orders/my-orders/'),
@@ -60,9 +54,22 @@ export const paymentAPI = {
     initialize: (data) => api.post('/payments/initialize/', data),
     verify: (data) => api.post('/payments/verify/', data),
     getHistory: () => api.get('/payments/history/'),
-    getRiderEarnings: () => api.get('/payments/rider-earnings/'),
 }
 export const contactAPI = {
   submit: (data) => api.post('/notifications/contact/', data),
+}
+export const notificationAPI = {
+    getAll: () => api.get('/notifications/'),
+    getUnreadCount: () => api.get('/notifications/unread-count/'),
+    markRead: (id) => api.patch(`/notifications/mark-read/${id}/`),
+    markAllRead: () => api.patch('/notifications/mark-all-read/'),
+}
+export const authAPI = {
+    register: (data) => api.post('/auth/register/', data),
+    login: (data) => api.post('/auth/login/', data),
+    logout: (data) => api.post('/auth/logout/', data),
+    getProfile: () => api.get('/auth/profile/'),
+    updateProfile: (data) => api.patch('/auth/profile/update/', data),
+    changePassword: (data) => api.post('/auth/change-password/', data),
 }
 export default api

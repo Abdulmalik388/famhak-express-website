@@ -328,7 +328,7 @@
     position:relative;
     border-radius:25px;
     overflow:hidden;
-
+     border: 1px solid rgba(15, 23, 42, 0.06);
     box-shadow:
     0 25px 60px rgba(0,0,0,.25);
 
@@ -336,7 +336,9 @@
 }
 
 .video-card:hover{
-    transform:translateY(-8px);
+       transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(255, 90, 31, 0.14);
+  border-color: #ff5a1f
 }
 
 .video-card video{
@@ -405,17 +407,35 @@
 .whyus-section {
   transition: all 0.3s ease;
 }
-.whyus-section:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
-
+.whyus-section .d-flex {
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 18px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+.whyus-section .d-flex:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(255, 90, 31, 0.14);
+  border-color: #ff5a1f;
 }
 .simple-process-section {
   transition: all 0.3s ease;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 18px;
+  overflow: hidden;
 }
 .simple-process-section:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(255, 90, 31, 0.14);
+  border-color: #ff5a1f;
+}
+.simple-process-section .card {
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+}
+.simple-process-section .card:hover {
+  background-color: transparent;
 }
 .testimonial-section {
   background: #f8f9fa;
@@ -426,16 +446,16 @@
   padding: 25px;
   border-radius: 16px;
   height: 100%;
-
+ border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 
   transition: all 0.3s ease;
 }
 
-.testimonial-card:hover {
-  transform: translateY(-8px);
-
-  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+.testimonial-card:hover{
+     transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(255, 90, 31, 0.14);
+  border-color: #ff5a1f
 }
 
 .testimonial-img {
@@ -450,6 +470,7 @@
   font-size: 14px;
   line-height: 1.7;
 }
+
 
 /* Read More button hover */
 .read-more-btn {

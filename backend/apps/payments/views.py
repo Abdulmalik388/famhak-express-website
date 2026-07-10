@@ -9,6 +9,7 @@ import uuid
 from .models import Payment, RiderEarning
 from .serializers import PaymentSerializer, RiderEarningSerializer
 from apps.orders.models import Order
+from apps.notifications.utils import notify_payment_success
 
 
 def generate_reference():
@@ -133,8 +134,10 @@ def verify_payment(request):
     payment.status = 'success'
     payment.paid_at = timezone.now()
     payment.save()
+    notify_payment_success(order)
 
     print("PAYMENT UPDATED TO SUCCESS")
+
 
     # UPDATE ORDER
     order = payment.order

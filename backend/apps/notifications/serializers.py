@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Contact
+from .models import Notification
 
 
-class ContactSerializer(serializers.ModelSerializer):
+class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Contact
-        fields = ('id', 'name', 'email', 'phone', 'subject', 'message', 'is_read', 'created_at')
-        read_only_fields = ('id', 'is_read', 'created_at')
+        model = Notification
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at']

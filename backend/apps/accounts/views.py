@@ -94,7 +94,19 @@ def profile_view(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    old_password = request.data.get('old_password')
+    new_password = request.data.get('new_password')
 
+    if not request.user.check_password(old_password):
+        return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+
+    request.user.set_password(new_password)
+    request.user.save()
+    return Response({'message': 'Password changed successfully'})
+    
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_profile_view(request):

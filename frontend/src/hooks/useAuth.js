@@ -28,7 +28,7 @@ const useAuth = () => {
 
   const logoutHandler = async () => {
     await dispatch(logoutUser())
-    navigate('/login')
+    navigate('/')
   }
 
   return { user, isAuthenticated, loading, error, login, register, logout: logoutHandler }
