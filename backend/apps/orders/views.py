@@ -3,8 +3,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils import timezone
-from .models import Order
-from .serializers import OrderSerializer, CreateOrderSerializer
+from .models import Order, Review
+from .serializers import OrderSerializer, CreateOrderSerializer, ReviewSerializer, CreateReviewSerializer
+from django.db.models import Avg
 from apps.notifications.utils import (
     notify_order_placed,
     notify_order_assigned,
@@ -158,4 +159,31 @@ def estimate_price(request):
             'package_size': package_size,
             'total': price
         }
+    })
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_review(request):
+    serializer = CreateReviewSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        review = serializer.save()
+        return Response({
+            'message': 'Review submitted successfully',
+            'review': ReviewSerializer(review).data
+        }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def rider_reviews(request, rider_id):
+    reviews = Review.objects.filter(rider__id=rider_id)
+    serializer = ReviewSerializer(reviews, many=True)
+    avg = reviews.aggregate(avg=Avg('rating'))['avg']
+    return Response({
+        'reviews': serializer.data,
+        'average_rating': round(avg, 1) if avg else 0,
+        'total_reviews': reviews.count()
     })

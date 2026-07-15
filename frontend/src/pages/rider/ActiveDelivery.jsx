@@ -41,11 +41,20 @@ function ActiveDelivery() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [order, setOrder] = useState(null)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [loading, setLoading] = useState(true)
   const [currentStatus, setCurrentStatus] = useState(null)
   const [riderPos, setRiderPos] = useState(null)
   const locationInterval = useRef(null)
   const { connected, sendLocation, sendStatusUpdate } = useTracking(orderId)
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -107,13 +116,29 @@ function ActiveDelivery() {
   return (
     <div className="min-vh-100 d-flex" style={{ backgroundColor: '#f8f9fa' }}>
 
-      <RiderSidebar />
+      <RiderSidebar mobileOpen={sidebarOpen} isMobile={isMobile} onClose={() => setSidebarOpen(false)} />
+      {isMobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 1050 }}
+        />
+      )}
 
       {/* MAIN CONTENT */}
-      <div style={{ marginLeft: '280px', flex: 1 }}>
+      <div style={{ marginLeft: isMobile ? 0 : '280px', flex: 1 }}>
         <div className="d-flex justify-content-between align-items-center px-4 py-3"
           style={{ borderBottom: '1px solid #f0f0f0', backgroundColor: 'white' }}>
           <div className="d-flex align-items-center gap-3">
+            {isMobile && (
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary d-md-none"
+                onClick={() => setSidebarOpen((prev) => !prev)}
+                style={{ minWidth: '40px', padding: '0.5rem 0.75rem' }}
+              >
+                ☰
+              </button>
+            )}
             <h5 className="fw-bold mb-0">Active Delivery</h5>
             <div className="d-flex align-items-center gap-1">
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: connected ? '#198754' : '#dc3545' }}></div>

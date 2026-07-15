@@ -72,8 +72,10 @@ def verify_payment(request):
 
     try:
         payment = Payment.objects.get(reference=reference)
+        order = payment.order
         print("PAYMENT FOUND:", payment.reference)
         print("CURRENT STATUS:", payment.status)
+        print("PAYMENT ORDER:", order.id if order else 'None')
 
     except Payment.DoesNotExist:
         return Response(
@@ -81,8 +83,25 @@ def verify_payment(request):
             status=status.HTTP_404_NOT_FOUND
         )
 
+    if payment.status == 'success':
+        return Response({
+            'message': 'Payment already verified',
+            'payment': PaymentSerializer(payment).data
+        })
+
+    if order is None:
+        return Response(
+            {'error': 'Payment is not linked to an order'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
         secret_key = getattr(settings, 'PAYSTACK_SECRET_KEY', None)
+        if not secret_key:
+            return Response(
+                {'error': 'Payment gateway is not configured'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         masked_secret = f'{secret_key[:4]}***{secret_key[-4:]}' if secret_key else 'None'
         headers = {
             'Authorization': f'Bearer {secret_key}',
@@ -134,19 +153,15 @@ def verify_payment(request):
     payment.status = 'success'
     payment.paid_at = timezone.now()
     payment.save()
+
+    # UPDATE ORDER
+    order.payment_status = 'paid'
+    order.save()
+
     notify_payment_success(order)
 
     print("PAYMENT UPDATED TO SUCCESS")
-
-
-    # UPDATE ORDER
-    order = payment.order
-
-    if order:
-        order.payment_status = 'paid'
-        order.save()
-
-        print("ORDER UPDATED TO PAID")
+    print("ORDER UPDATED TO PAID")
 
     # CREATE RIDER EARNING
     if order and order.rider:

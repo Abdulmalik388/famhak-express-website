@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, get_user_model
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import RegisterSerializer, UserSerializer, CreateRiderSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 
@@ -24,19 +24,15 @@ def create_rider(request):
     if request.user.role != 'admin':
         return Response({'error': 'Only admins can create rider accounts'}, status=status.HTTP_403_FORBIDDEN)
     
-    data = request.data.copy()
-    data['role'] = 'rider'
-    serializer = RegisterSerializer(data=data)
-    
-    # Temporarily allow rider creation
+    print('CREATE RIDER REQUEST DATA:', request.data)
+    serializer = CreateRiderSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        user.role = 'rider'
-        user.save()
         return Response({
             'message': 'Rider account created successfully',
             'user': UserSerializer(user).data
         }, status=status.HTTP_201_CREATED)
+    print('CREATE RIDER ERRORS:', serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
@@ -106,7 +102,7 @@ def change_password(request):
     request.user.set_password(new_password)
     request.user.save()
     return Response({'message': 'Password changed successfully'})
-    
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_profile_view(request):

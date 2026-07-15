@@ -5,9 +5,10 @@ const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: '⊙', path: '/rider/dashboard' },
   { id: 'available', label: 'Available Orders', icon: '📦', path: '/rider/available-orders' },
   { id: 'my-orders', label: 'My Deliveries', icon: '▤', path: '/rider/my-orders' },
+  { id: 'reviews', label: 'My Reviews', icon: '⭐', path: '/rider/reviews' },
 ]
 
-function RiderSidebar() {
+function RiderSidebar({ mobileOpen = false, isMobile = false, onClose = () => {} }) {
   const { logout } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -24,25 +25,41 @@ function RiderSidebar() {
       top: 0,
       left: 0,
       bottom: 0,
+      transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
+      transition: 'transform 0.25s ease-in-out',
+      zIndex: 1100,
     }}>
-      <div className="mb-5 d-flex align-items-center gap-2">
+      <div className="mb-5 d-flex justify-content-between align-items-center gap-2">
         <div style={{ position: 'relative', width: '45px', height: '45px', flexShrink: 0 }}>
           <div style={{ width: '45px', height: '45px', background: 'white', borderRadius: '4px' }} />
           <span style={{ position: 'absolute', left: '-15px', top: '12px', width: '25px', height: '4px', background: 'white', borderRadius: '10px', display: 'block' }} />
           <span style={{ position: 'absolute', left: '-15px', top: '20px', width: '18px', height: '4px', background: 'white', borderRadius: '10px', display: 'block' }} />
           <span style={{ position: 'absolute', left: '-15px', top: '28px', width: '12px', height: '4px', background: 'white', borderRadius: '10px', display: 'block' }} />
         </div>
-        <div style={{ marginLeft: '8px' }}>
+        <div style={{ marginLeft: '8px', flex: 1 }}>
           <h3 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 800, color: 'white', lineHeight: 1, letterSpacing: '1px' }}>FAMHAK</h3>
           <p style={{ margin: 0, fontSize: '0.7rem', color: 'white', letterSpacing: '1px', opacity: 0.9 }}>rider portal</p>
         </div>
+        {isMobile && (
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-light d-md-none"
+            onClick={onClose}
+            style={{ minWidth: '40px', padding: '0.5rem 0.75rem' }}
+          >
+            ✕
+          </button>
+        )}
       </div>
 
       <div className="d-flex flex-column gap-1 flex-grow-1">
         {navItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => navigate(item.path)}
+            onClick={() => {
+              navigate(item.path)
+              onClose()
+            }}
             style={{
               background: activePath === item.path ? 'rgba(255,255,255,0.2)' : 'none',
               border: 'none',

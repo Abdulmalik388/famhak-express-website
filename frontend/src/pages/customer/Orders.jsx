@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { fetchMyOrders, updateOrderStatus } from '../../store/slices/orderSlice'
@@ -21,10 +21,19 @@ function CustomerOrders() {
     const navigate = useNavigate()
     const { user, logout } = useAuth()
     const { orders, loading } = useSelector((state) => state.orders)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
 
     useEffect(() => {
         dispatch(fetchMyOrders())
     }, [dispatch])
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768)
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const handleCancel = async (orderId) => {
         const result = await dispatch(updateOrderStatus({ id: orderId, status: 'cancelled' }))
@@ -36,17 +45,35 @@ function CustomerOrders() {
       return (
         <div className="min-vh-100 d-flex" style={{ backgroundColor: '#f8f9fa' }}>
 
-            <CustomerSidebar />
+            <CustomerSidebar mobileOpen={sidebarOpen} isMobile={isMobile} onClose={() => setSidebarOpen(false)} />
+            {isMobile && sidebarOpen && (
+                <div
+                    onClick={() => setSidebarOpen(false)}
+                    style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 1040 }}
+                />
+            )}
 
             {/* MAIN CONTENT */}
-            <div style={{ marginLeft: '280px', flex: 1 }}>
+            <div style={{ marginLeft: isMobile ? 0 : '280px', flex: 1 }}>
 
                 {/* Top bar */}
                 <div
                     className="d-flex justify-content-between align-items-center px-4 py-3"
                     style={{ borderBottom: '1px solid #f0f0f0', backgroundColor: 'white' }}
                 >
-                    <h5 className="fw-bold mb-0">My Orders</h5>
+                    <div className="d-flex align-items-center gap-3">
+                        {isMobile && (
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-secondary d-md-none"
+                                onClick={() => setSidebarOpen((prev) => !prev)}
+                                style={{ minWidth: '40px', padding: '0.5rem 0.75rem' }}
+                            >
+                                ☰
+                            </button>
+                        )}
+                        <h5 className="fw-bold mb-0">My Orders</h5>
+                    </div>
                     <div className="d-flex align-items-center gap-3">
                         <span className="fw-semibold" style={{ fontSize: '15px' }}>
                             Hi, {user?.full_name?.split(' ')[0]} 👋
@@ -136,6 +163,18 @@ function CustomerOrders() {
                                                     >
                                                         📍 Track
                                                     </button>
+                                                )}
+                                                {order.status === 'delivered' && !order.reviewed && (
+                                                    <button
+                                                        className="btn btn-sm fw-semibold"
+                                                        style={{ backgroundColor: '#FFF7ED', color: '#F97316', borderRadius: '8px', border: '1px solid #F97316' }}
+                                                        onClick={() => navigate(`/customer/review/${order.id}`)}
+                                                    >
+                                                        ⭐ Rate
+                                                    </button>
+                                                )}
+                                                {order.status === 'delivered' && order.reviewed && (
+                                                    <span className="badge bg-success d-block">✅ Rated</span>
                                                 )}
 
                                                 {order.status === 'pending' && (

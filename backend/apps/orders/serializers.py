@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order
+from .models import Order, Review
 from apps.accounts.serializers import UserSerializer
 import math
 
@@ -33,11 +33,21 @@ class OrderSerializer(serializers.ModelSerializer):
     customer_detail = UserSerializer(source='customer', read_only=True)
     rider_detail = UserSerializer(source='rider', read_only=True)
     is_paid = serializers.SerializerMethodField()
+    reviewed = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = '__all__'
         read_only_fields = ['id', 'customer', 'created_at', 'updated_at']
+
+    def get_reviewed(self, obj):
+        return hasattr(obj, 'review') and obj.review is not None
+
+    def get_is_paid(self, obj):
+        try:
+            return obj.payment.status == 'success'
+        except:
+            return False
 
     def get_is_paid(self, obj):
         try:
@@ -89,3 +99,37 @@ class UpdateOrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['status']
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    reviewer_name = serializers.CharField(source='reviewer.full_name', read_only=True)
+    rider_name = serializers.CharField(source='rider.full_name', read_only=True)
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'reviewer', 'rider']
+
+
+class CreateReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['order', 'rating', 'comment']
+
+    def validate_order(self, order):
+        user = self.context['request'].user
+        if order.customer != user:
+            raise serializers.ValidationError('You can only review your own orders')
+        if order.status != 'delivered':
+            raise serializers.ValidationError('You can only review delivered orders')
+        if hasattr(order, 'review'):
+            raise serializers.ValidationError('You have already reviewed this order')
+        return order
+
+    def create(self, validated_data):
+        order = validated_data['order']
+        return Review.objects.create(
+            reviewer=self.context['request'].user,
+            rider=order.rider,
+            **validated_data
+        )

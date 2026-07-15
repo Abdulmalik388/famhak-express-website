@@ -23,6 +23,13 @@ import RiderMyOrders from './pages/rider/MyOrders'
 import Payment from './pages/customer/Payment'
 import PaymentHistory from './pages/customer/PaymentHistory'
 import ProtectedRoute from './components/ProtectedRoute'
+import ReviewOrder from './pages/customer/ReviewOrder'
+import AdminOrders from './pages/admin/Orders'
+import AdminRiders from './pages/admin/Riders'  
+import AdminCustomers from './pages/admin/Customers'
+import AdminPayments from './pages/admin/Payments'
+import AdminReviews from './pages/admin/Reviews'
+import RiderReviews from './pages/rider/Reviews'
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth)
@@ -121,6 +128,44 @@ function App() {
   <ProtectedRoute allowedRoles={['rider']}>
     <RiderSettings />
   </ProtectedRoute>
+} />
+{/* Customer review route */}
+<Route path="/customer/review/:orderId" element={
+    <ProtectedRoute allowedRoles={['customer']}>
+        <ReviewOrder />
+    </ProtectedRoute>
+} />
+
+{/* Admin routes */}
+<Route path="/admin/orders" element={
+    <ProtectedRoute allowedRoles={['admin']}>
+        <AdminOrders />
+    </ProtectedRoute>
+} />
+<Route path="/admin/riders" element={
+    <ProtectedRoute allowedRoles={['admin']}>
+        <AdminRiders />
+    </ProtectedRoute>
+} />
+<Route path="/admin/customers" element={
+    <ProtectedRoute allowedRoles={['admin']}>
+        <AdminCustomers />
+    </ProtectedRoute>
+} />
+<Route path="/admin/payments" element={
+    <ProtectedRoute allowedRoles={['admin']}>
+        <AdminPayments />
+    </ProtectedRoute>
+} />
+<Route path="/admin/reviews" element={
+    <ProtectedRoute allowedRoles={['admin']}>
+        <AdminReviews />
+    </ProtectedRoute>
+} />
+<Route path="/rider/reviews" element={
+    <ProtectedRoute allowedRoles={['rider']}>
+        <RiderReviews />
+    </ProtectedRoute>
 } />
 
       <Route path="*" element={<Navigate to="/" />} />

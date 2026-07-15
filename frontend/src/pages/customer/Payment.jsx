@@ -13,11 +13,21 @@ function Payment() {
     const { user } = useSelector((state) => state.auth)
     const { logout } = useAuth()
     const [order, setOrder] = useState(null)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
     const [paymentData, setPaymentData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [initializing, setInitializing] = useState(false)
     const [verifying, setVerifying] = useState(false)
     const [paymentSuccess, setPaymentSuccess] = useState(false)
+    const [paystackLoaded, setPaystackLoaded] = useState(false)
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768)
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -30,14 +40,56 @@ function Payment() {
             }
             setLoading(false)
         }
+
+        const loadPaystack = () => {
+            if (window.PaystackPop) {
+                setPaystackLoaded(true)
+                return
+            }
+            const existingScript = document.querySelector('script[src="https://js.paystack.co/v1/inline.js"]')
+            if (existingScript) {
+                if (window.PaystackPop || existingScript.readyState === 'complete' || existingScript.readyState === 'loaded') {
+                    setPaystackLoaded(true)
+                    return
+                }
+                existingScript.addEventListener('load', () => setPaystackLoaded(true))
+                existingScript.addEventListener('error', () => {
+                    toast.error('Failed to load payment provider. Refresh the page and try again.')
+                })
+                return
+            }
+            const script = document.createElement('script')
+            script.src = 'https://js.paystack.co/v1/inline.js'
+            script.async = true
+            script.onload = () => setPaystackLoaded(true)
+            script.onerror = () => {
+                toast.error('Failed to load payment provider. Refresh the page and try again.')
+            }
+            document.body.appendChild(script)
+        }
+
         fetchOrder()
+        loadPaystack()
     }, [orderId])
+
+    const isValidEmail = (email) => {
+        if (!email || typeof email !== 'string') return false
+        const normalized = email.trim()
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(normalized)
+    }
 
     const initializePayment = async () => {
         setInitializing(true)
         try {
             const response = await paymentAPI.initialize({ order_id: orderId })
-            setPaymentData(response.data)
+            const email = response.data?.email?.trim()
+            if (!isValidEmail(email)) {
+                toast.error('Your account email is invalid. Update your email before paying.')
+                setPaymentData(null)
+            } else {
+                setPaymentData({ ...response.data, email })
+            }
         } catch (error) {
             toast.error(error.response?.data?.error || 'Failed to initialize payment')
         }
@@ -45,14 +97,26 @@ function Payment() {
     }
 
     const payNow = () => {
-        if (!window.PaystackPop) {
+        if (!paystackLoaded || !window.PaystackPop) {
             toast.error('Payment system still loading, please try again')
+            return
+        }
+
+        if (!paymentData) {
+            toast.error('Please initialize payment first.')
+            return
+        }
+
+        const email = paymentData.email || user?.email || order?.customer_detail?.email
+        const normalizedEmail = typeof email === 'string' ? email.trim() : ''
+        if (!isValidEmail(normalizedEmail)) {
+            toast.error('Paystack requires a valid customer email. Please update your account email.')
             return
         }
 
         const handler = window.PaystackPop.setup({
             key: paymentData.public_key,
-            email: user?.email,
+            email: normalizedEmail,
             amount: paymentData.amount,
             ref: paymentData.reference,
             callback: function (response) {
@@ -106,17 +170,35 @@ function Payment() {
     return (
         <div className="min-vh-100 d-flex" style={{ backgroundColor: '#f8f9fa' }}>
 
-            <CustomerSidebar />
+            <CustomerSidebar mobileOpen={sidebarOpen} isMobile={isMobile} onClose={() => setSidebarOpen(false)} />
+            {isMobile && sidebarOpen && (
+                <div
+                    onClick={() => setSidebarOpen(false)}
+                    style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.35)', zIndex: 1040 }}
+                />
+            )}
 
             {/* MAIN CONTENT */}
-            <div style={{ marginLeft: '280px', flex: 1 }}>
+            <div style={{ marginLeft: isMobile ? 0 : '280px', flex: 1 }}>
 
                 {/* Top bar */}
                 <div
                     className="d-flex justify-content-between align-items-center px-4 py-3"
                     style={{ borderBottom: '1px solid #f0f0f0', backgroundColor: 'white' }}
                 >
-                    <h5 className="fw-bold mb-0">Complete Payment</h5>
+                    <div className="d-flex align-items-center gap-3">
+                        {isMobile && (
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-secondary d-md-none"
+                                onClick={() => setSidebarOpen((prev) => !prev)}
+                                style={{ minWidth: '40px', padding: '0.5rem 0.75rem' }}
+                            >
+                                ☰
+                            </button>
+                        )}
+                        <h5 className="fw-bold mb-0">Complete Payment</h5>
+                    </div>
                     <div className="d-flex align-items-center gap-3">
                         <span className="fw-semibold" style={{ fontSize: '15px' }}>
                             Hi, {user?.full_name?.split(' ')[0]} 👋
@@ -171,10 +253,15 @@ function Payment() {
                                         className="btn w-100 text-white fw-bold py-3"
                                         style={{ backgroundColor: '#F97316', border: 'none', borderRadius: '10px' }}
                                         onClick={payNow}
-                                        disabled={verifying}
+                                        disabled={verifying || !paystackLoaded}
                                     >
-                                        {verifying ? 'Verifying...' : `💳 Pay ₦${Number(order?.price).toLocaleString()} Now`}
+                                        {verifying ? 'Verifying...' : !paystackLoaded ? 'Loading payment...' : `💳 Pay ₦${Number(order?.price).toLocaleString()} Now`}
                                     </button>
+                                )}
+                                {!paystackLoaded && paymentData && (
+                                    <div className="text-center mt-3 text-muted small">
+                                        Loading payment provider... please wait.
+                                    </div>
                                 )}
 
                                 <p className="text-center text-muted small mt-3">

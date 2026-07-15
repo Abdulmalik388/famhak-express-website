@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Order
+from .models import Order, Review
+
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -14,3 +15,10 @@ class OrderAdmin(admin.ModelAdmin):
             return False
     is_paid_display.short_description = 'Paid'
     is_paid_display.boolean = True
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['reviewer', 'rider', 'rating', 'created_at']
+    list_filter = ['rating']
+    search_fields = ['reviewer__email', 'rider__email', 'comment']

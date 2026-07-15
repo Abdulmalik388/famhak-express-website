@@ -72,4 +72,19 @@ export const authAPI = {
     updateProfile: (data) => api.patch('/auth/profile/update/', data),
     changePassword: (data) => api.post('/auth/change-password/', data),
 }
+export const reviewAPI = {
+    create: (data) => api.post('/orders/reviews/create/', data),
+    getRiderReviews: (riderId) => api.get(`/orders/reviews/rider/${riderId}/`),
+}
+
+export const adminAPI = {
+    getOverview: () => api.get('/analytics/overview/'),
+    getAllOrders: () => api.get('/analytics/orders/'),
+    updateOrder: (id, data) => api.patch(`/analytics/orders/${id}/update/`, data),
+    getAllUsers: (role) => api.get(`/analytics/users/${role ? `?role=${role}` : ''}`),
+    deleteUser: (id) => api.delete(`/analytics/users/${id}/delete/`),
+    getAllPayments: () => api.get('/analytics/payments/'),
+    getAllReviews: () => api.get('/analytics/reviews/'),
+    createRider: (data) => api.post('/auth/create-rider/', data),
+}
 export default api
